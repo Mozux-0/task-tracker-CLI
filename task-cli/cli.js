@@ -1,9 +1,44 @@
 #!/usr/bin/env node
 
-const generalCommands = [ '-h', '--help', '-V', '--version', '-cl', '--commandlist' ]
+// packages 
+
+const path = require('path');
+const fs = require('fs');
+
+// variables
+
+const generalCommands = [ '-h', '--help', '-V', '--version', '-cl', '--commandlist', '-test' ]
 const cliCommands = [ 'add', 'update', 'delete' ]
 
+let taskCount = 1;
+
+// process
+
 const input = process.argv[2]
+
+// delete later, for testing purposes
+// if (input.includes(generalCommands[6])) {
+//   const filePath = path.join(__dirname, 'tasks.json');
+
+//   const data = fs.readFileSync(filePath, 'utf-8');
+
+//   let arr = JSON.parse(data);
+
+//   arr.push({ name: "kontol" });
+
+//   fs.writeFileSync(filePath, JSON.stringify(arr, 2, null));
+
+//   console.log(arr);
+
+//   // fs.appendFileSync(filePath, JSON.stringify({ name: 'test' }, null, 2),'utf-8');
+//   // fs.appendFileSync(filePath, JSON.stringify({ name: 'kontl' }, null, 2),'utf-8');
+
+//   // fs.readFileSync(filePath, 'utf-8', (err, data) => {
+//   //   if (err) { console.log(err); };
+//   //   console.log('File data:', data);
+//   // });
+//   process.exit(0);
+// };
 
 if (input.includes(generalCommands[2]) || input.includes(generalCommands[3])) {
   console.log('task-cli v1.0.0');
@@ -34,11 +69,25 @@ if (input.includes(generalCommands[4]) || input.includes(generalCommands[5])) {
   process.exit(0);
 };
 
-const item = process.argv[3]
+const description = process.argv[3]
+const filePath = path.join(__dirname, 'tasks.json')
 
 switch (input) {
   case 'add':
-    console.log(`Task ${ item } is successfully added. ID: 1`);
+    if (!description) { 
+      console.log("Invalid item. Use the following command: task-cli add <task>");
+      process.exit(1);
+    };
+
+    const data = fs.readFileSync(filePath, 'utf-8');
+    let arr = JSON.parse(data);
+
+    arr.push({ id: taskCount, description });
+    fs.writeFileSync(filePath, JSON.stringify(arr, null, 2), 'utf-8');
+
+    console.log(`${ description } successfully added to the list with id ${ taskCount }`);
+    taskCount = taskCount + 1; //update
+
     process.exit(0);
   case 'update':
     console.log(`Task ID is successfully updated`);
