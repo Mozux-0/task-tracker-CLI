@@ -10,8 +10,6 @@ const fs = require('fs');
 const generalCommands = [ '-h', '--help', '-V', '--version', '-cl', '--commandlist', '-test' ]
 const cliCommands = [ 'add', 'update', 'delete' ]
 
-let taskCount = 1;
-
 // process
 
 const input = process.argv[2]
@@ -69,28 +67,44 @@ if (input.includes(generalCommands[4]) || input.includes(generalCommands[5])) {
   process.exit(0);
 };
 
-const description = process.argv[3]
+const args = process.argv[3]
 const filePath = path.join(__dirname, 'tasks.json')
+
+const data = fs.readFileSync(filePath, 'utf-8')
+let arr = JSON.parse(data)
 
 switch (input) {
   case 'add':
-    if (!description) { 
+    if (!args) { 
       console.log("Invalid item. Use the following command: task-cli add <task>");
       process.exit(1);
     };
 
-    const data = fs.readFileSync(filePath, 'utf-8');
-    let arr = JSON.parse(data);
+    console.log(arr.count);
+    arr.count += 1;
 
-    arr.push({ id: taskCount, description });
+    arr.items.push({ id: arr.count, description: args, status: "todo" });
     fs.writeFileSync(filePath, JSON.stringify(arr, null, 2), 'utf-8');
 
-    console.log(`${ description } successfully added to the list with id ${ taskCount }`);
-    taskCount = taskCount + 1; //update
+    console.log(`${ args } successfully added to the list with id ${ arr.count }`);
 
     process.exit(0);
   case 'update':
-    console.log(`Task ID is successfully updated`);
+    if (args > taskCount || args <= 0) {
+      console.log(`Invalid ID number, please enter an ID below ${ data.count }`);
+      process.exit(1);
+    };
+
+    console.log(args);
+
+    const exist = arr.some(obj => obj.id === args);
+
+    if (!exist) {
+      console.log(`Task ${ args } is not found, please input a valid id`);
+      process.exit(1);
+    }
+
+    console.log(`Task ${ args } has successfully been updated`);
     process.exit(0);
   case 'delete':
     console.log(`Task ID is successfully deleted`);
