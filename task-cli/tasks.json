@@ -1,20 +1,4 @@
 {
-  "count": 3,
-  "items": [
-    {
-      "id": 1,
-      "description": "ngentot",
-      "status": "todo"
-    },
-    {
-      "id": 2,
-      "description": "nahanberak",
-      "status": "todo"
-    },
-    {
-      "id": 3,
-      "description": "ngewe",
-      "status": "todo"
-    }
-  ]
+  "count": 0,
+  "items": []
 }
