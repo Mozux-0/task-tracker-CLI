@@ -67,7 +67,8 @@ if (input.includes(generalCommands[4]) || input.includes(generalCommands[5])) {
   process.exit(0);
 };
 
-const args = process.argv[3]
+const arg1 = process.argv[3]
+const arg2 = process.argv[4]
 const filePath = path.join(__dirname, 'tasks.json')
 
 const data = fs.readFileSync(filePath, 'utf-8')
@@ -75,36 +76,45 @@ let arr = JSON.parse(data)
 
 switch (input) {
   case 'add':
-    if (!args) { 
+    const itemName = arg1;
+
+    if (!itemName) { 
       console.log("Invalid item. Use the following command: task-cli add <task>");
       process.exit(1);
     };
 
-    console.log(arr.count);
     arr.count += 1;
+    const currId = arr.count;
 
-    arr.items.push({ id: arr.count, description: args, status: "todo" });
+    arr.items.push({ id: currId, description: itemName, status: "todo" });
     fs.writeFileSync(filePath, JSON.stringify(arr, null, 2), 'utf-8');
 
-    console.log(`${ args } successfully added to the list with id ${ arr.count }`);
+    console.log(`${ itemName } successfully added to the list with id ${ currId }`);
 
     process.exit(0);
   case 'update':
-    if (args > taskCount || args <= 0) {
-      console.log(`Invalid ID number, please enter an ID below ${ data.count }`);
+    if (!arg2) {
+      console.log("Invalid description. Use the following command: task-cli update <id> <new description>");
+    };
+
+    const chosenId = Number(arg1), currSum = arr.count, newDescription = arg2;
+
+    if (chosenId > currSum || chosenId <= 0) {
+      console.log(`Invalid ID number. Please enter an ID below ${ currCount }`);
       process.exit(1);
     };
 
-    console.log(args);
-
-    const exist = arr.some(obj => obj.id === args);
+    const exist = arr.items.some(obj => obj.id === chosenId);
 
     if (!exist) {
-      console.log(`Task ${ args } is not found, please input a valid id`);
+      console.log(`Task ${ chosenId } is not found, please input a valid id`);
       process.exit(1);
     }
 
-    console.log(`Task ${ args } has successfully been updated`);
+    arr.items[chosenId - 1].description = newDescription;
+    fs.writeFileSync(filePath, JSON.stringify(arr, null, 2), 'utf-8');
+
+    console.log(`Task ${ chosenId } has successfully been updated to ${ newDescription }`);
     process.exit(0);
   case 'delete':
     console.log(`Task ID is successfully deleted`);
