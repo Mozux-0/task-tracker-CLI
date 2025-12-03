@@ -1,6 +1,5 @@
 # task-tracker-CLI
-from Roadmap.sh
-https://roadmap.sh/projects/task-tracker?fl=0
+from Roadmap.sh [https://roadmap.sh/projects/task-tracker?fl=0](https://roadmap.sh/projects/task-tracker)
 
 ## How to use
 ````
