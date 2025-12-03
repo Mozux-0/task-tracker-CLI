@@ -9,9 +9,9 @@ const fs = require('fs');
 
 const generalCommands = [ '-h', '--help', '-V', '--version', '-cl', '--commandlist', '-test' ]
 
-// process
-
 const input = process.argv[2]
+
+// process
 
 if (input.includes(generalCommands[2]) || input.includes(generalCommands[3])) {
   console.log('task-cli v1.0.0');
@@ -35,9 +35,13 @@ if (input.includes(generalCommands[0]) || input.includes(generalCommands[1])) {
 if (input.includes(generalCommands[4]) || input.includes(generalCommands[5])) {
   console.log(`
     Commands:
-      add <task>     add a new task
-      update <ID>    update an existing task
-      delete <ID>    delete a task
+      add <task>                  add a new task
+      update <ID>                 update an existing task
+      delete <ID>                 delete a task
+      mark-in-progress <ID>       mark a task as in-progress
+      mark-done <ID>              mark a task as done
+      list                        list all of the tasks
+      list [status]               list the tasks by status (todo, in-progress, done)
   `);
   process.exit(0);
 };
@@ -61,12 +65,16 @@ function validateId (id, maxCount, arr) {
   }
 };
 
+// variables
+
 const arg1 = process.argv[3]
 const arg2 = process.argv[4]
 const filePath = path.join(__dirname, 'tasks.json')
 
 const data = fs.readFileSync(filePath, 'utf-8')
 let arr = JSON.parse(data)
+
+// the functions
 
 switch (input) {
   case 'add':
@@ -80,7 +88,7 @@ switch (input) {
     arr.count += 1;
     var currId = arr.count;
 
-    arr.items.push({ id: currId, description: itemName, status: "todo" });
+    arr.items.push({ id: currId, description: itemName, status: "todo", createdAt: new Date().toLocaleString(), updatedAt: new Date().toLocaleString() });
     fs.writeFileSync(filePath, JSON.stringify(arr, null, 2), 'utf-8');
 
     console.log(`${ itemName } successfully added to the list with id ${ currId }`);
@@ -97,6 +105,7 @@ switch (input) {
     validateId(chosenId, currSum, arr);
 
     arr.items[chosenId - 1].description = newDescription;
+    arr.items[chosenId - 1].updatedAt = new Date().toLocaleString();
     fs.writeFileSync(filePath, JSON.stringify(arr, null, 2), 'utf-8');
 
     console.log(`Task ${ chosenId } has successfully been updated to ${ newDescription }`);
