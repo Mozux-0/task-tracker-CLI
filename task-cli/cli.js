@@ -8,7 +8,6 @@ const fs = require('fs');
 // variables
 
 const generalCommands = [ '-h', '--help', '-V', '--version', '-cl', '--commandlist', '-test' ]
-const cliCommands = [ 'add', 'update', 'delete' ]
 
 // process
 
@@ -44,8 +43,13 @@ if (input.includes(generalCommands[4]) || input.includes(generalCommands[5])) {
 };
 
 function validateId (id, maxCount, arr) {
+  if (maxCount == 0) {
+    console.log("You have no task, please add a task.");
+    process.exit(1);
+  };
+
   if (id > maxCount || id <= 0) {
-    console.log(`Invalid ID number. Please enter an ID below ${ maxCount }`);
+    console.log(`Invalid ID number. Please enter an ID below or equal to ${ maxCount }`);
     process.exit(1);
   };
 
@@ -66,7 +70,7 @@ let arr = JSON.parse(data)
 
 switch (input) {
   case 'add':
-    const itemName = arg1;
+    var itemName = arg1;
 
     if (!itemName) { 
       console.log("Invalid item. Use the following command: task-cli add <task>");
@@ -83,11 +87,13 @@ switch (input) {
 
     process.exit(0);
   case 'update':
-    if (!arg2) {
+    var newDescription = arg2;
+
+    if (!newDescription) {
       console.log("Invalid description. Use the following command: task-cli update <id> <new description>");
     };
 
-    var chosenId = Number(arg1), currSum = arr.count, newDescription = arg2;
+    var chosenId = Number(arg1), currSum = arr.count;
     validateId(chosenId, currSum, arr);
 
     arr.items[chosenId - 1].description = newDescription;
@@ -110,7 +116,25 @@ switch (input) {
   
     console.log(`Task ${ chosenId } is successfully deleted`);
     process.exit(0);
+  case 'mark-in-progress':
+    var chosenId = Number(arg1), currSum = arr.count;
+    validateId(chosenId, currSum, arr);
+
+    arr.items[chosenId - 1].status = 'in-progress';
+    fs.writeFileSync(filePath, JSON.stringify(arr, null, 2), 'utf-8');
+
+    console.log(`Task ${ chosenId } has successfully been marked in-progress`);
+    process.exit(0);
+  case 'mark-done':
+      var chosenId = Number(arg1), currSum = arr.count;
+      validateId(chosenId, currSum, arr);
+
+      arr.items[chosenId - 1].status = 'done';
+      fs.writeFileSync(filePath, JSON.stringify(arr, null, 2), 'utf-8');
+
+      console.log(`Task ${ chosenId } has successfully been marked done`);
+      process.exit(0);
   default:
-    console.log("Invalid command. Use -cl or --commandlist to see the valid commands.");
-    process.exit(1);
+  console.log("Invalid command. Use -cl or --commandlist to see the valid commands.");
+  process.exit(1);
 };
