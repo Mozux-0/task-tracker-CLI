@@ -14,7 +14,7 @@ delete <ID>                 delete a task
 mark-in-progress <ID>       mark a task as in-progress
 mark-done <ID>              mark a task as done
 list                        list all of the tasks
-list [status]               list the tasks by status (todo, in-progress, done)
+list <status>               list the tasks by status (todo, in-progress, done)
 ````
 
 ## For help
