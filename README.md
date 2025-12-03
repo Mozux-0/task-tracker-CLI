@@ -15,6 +15,8 @@ mark-in-progress <ID>       mark a task as in-progress
 mark-done <ID>              mark a task as done
 list                        list all of the tasks
 list <status>               list the tasks by status (todo, in-progress, done)
+
+Note: ID is numeric, task and status are strings
 ````
 
 ## For help
