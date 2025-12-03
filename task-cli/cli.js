@@ -134,6 +134,22 @@ switch (input) {
 
       console.log(`Task ${ chosenId } has successfully been marked done`);
       process.exit(0);
+  case 'list':
+    var stats = arg1;
+
+    if (!stats) {
+      arr.items.forEach((item, i) => {
+        console.log(`${ i + 1 }. ${ item.description }`);
+      });
+    } else {
+      arr.items.forEach((item, i) => {
+        if (item.status === stats) {
+          console.log(`${ i + 1 }. ${ item.description }`);
+        };
+      });
+    };
+    
+    process.exit(0);
   default:
   console.log("Invalid command. Use -cl or --commandlist to see the valid commands.");
   process.exit(1);
